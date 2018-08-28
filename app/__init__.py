@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, session
 from oauth2client.contrib.flask_util import UserOAuth2
 oauth2 = UserOAuth2 ()
 
@@ -28,7 +28,10 @@ def create_app (config = 'config'):
 
     @app.route ('/session-dump')
     def session_dump ():
-        return json.dumps (session)
+        if 'profile' in session.keys ():
+            return json.dumps (session.get ('profile'))
+        else:
+            return 'Dump!'
 
     return app
 
@@ -41,3 +44,4 @@ def _callback (credentials):
         return None
     else:
         session['profile'] = json.loads (content.decode ('utf-8'))
+
